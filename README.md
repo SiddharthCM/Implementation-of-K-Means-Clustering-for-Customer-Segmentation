@@ -8,66 +8,72 @@ To write a program to implement the K Means Clustering for Customer Segmentation
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1. Start the program.
-2. Import required libraries like pandas, matplotlib, and sklearn.
-3. Load the Mall_Customers.csv dataset.
-4. Select Annual Income and Spending Score as features.
-5. Initialize an empty list to store WCSS values.
-6. Apply K-Means for cluster values from 1 to 10.
-7. Store inertia (WCSS) for each cluster value.
-8. Plot the Elbow graph to find the optimal number of clusters.
-9. Train K-Means again using the chosen number of clusters (e.g., 5).
-10. Predict clusters, assign them to customers, and visualize the clusters using scatter plot. 
+1.Load the dataset and select the features Annual Income and Spending Score.
+
+2.Use the Elbow method to calculate WCSS for different cluster values to find the optimal number of clusters.
+
+3.Apply the K-Means algorithm with the chosen number of clusters to group the data points.
+
+4.Plot the clusters and mark the centroid of each cluster on the graph.
+ 
+
 ## Program:
 ```
 /*
 Program to implement the K Means Clustering for Customer Segmentation.
-Developed by: RANJEN MUNUSWAMY K B
-RegisterNumber:  212225040331
+Developed by: SAKTHI SABARISH P
+RegisterNumber:  212225040360
 */
+```
+```
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-data = pd.read_csv("Mall_Customers.csv")
-data.head()
-data.info()
-data.isnull().sum()
 from sklearn.cluster import KMeans
+
+data = pd.read_csv("C:/Users/acer/Downloads/Mall_Customers.csv")
+print(data.head())
+
+X = data.iloc[:, [3, 4]].values
+
 wcss = []
-for i in range(1,11):
-    kmeans = KMeans(n_clusters = i,init = "k-means++",n_init=10)
-    kmeans.fit(data.iloc[:,3:])
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, init='k-means++', random_state=42)
+    kmeans.fit(X)
     wcss.append(kmeans.inertia_)
-plt.plot(range(1,11),wcss)
-plt.xlabel("No. of Clusters")
-plt.ylabel("wcss")
-plt.title("Elbow Method")
-km = KMeans(n_clusters=5, n_init=10)
-km.fit(data.iloc[:, 3:])
-y_pred = km.predict(data.iloc[:,3:])
-y_pred
-data["cluster"] = y_pred
-df0 = data[data["cluster"]==0]
-df1 = data[data["cluster"]==1]
-df2 = data[data["cluster"]==2]
-df3 = data[data["cluster"]==3]
-df4 = data[data["cluster"]==4]
-plt.scatter(df0["Annual Income (k$)"],df0["Spending Score (1-100)"],c="red",label="cluster1")
-plt.scatter(df1["Annual Income (k$)"],df1["Spending Score (1-100)"],c="black",label="cluster2")
-plt.scatter(df2["Annual Income (k$)"],df2["Spending Score (1-100)"],c="blue",label="cluster3")
-plt.scatter(df3["Annual Income (k$)"],df3["Spending Score (1-100)"],c="green",label="cluster4")
-plt.scatter(df4["Annual Income (k$)"],df4["Spending Score (1-100)"],c="pink",label="cluster5")
+
+plt.figure(figsize=(8,5))
+plt.plot(range(1, 11), wcss, marker='o')
+plt.title('Elbow Method')
+plt.xlabel('Number of Clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+kmeans = KMeans(n_clusters=5, init='k-means++', random_state=42)
+y_kmeans = kmeans.fit_predict(X)
+plt.figure(figsize=(8,6))
+plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], s=100, c='red', label='Cluster 1')
+plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], s=100, c='purple', label='Cluster 2')
+plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], s=100, c='teal', label='Cluster 3')
+plt.scatter(X[y_kmeans == 3, 0], X[y_kmeans == 3, 1], s=100, c='cyan', label='Cluster 4')
+plt.scatter(X[y_kmeans == 4, 0], X[y_kmeans == 4, 1], s=100, c='magenta', label='Cluster 5')
+
+plt.scatter(kmeans.cluster_centers_[:,0], 
+            kmeans.cluster_centers_[:,1], 
+            s=300, c='black', label='Centroids')
+
+plt.title('Customer Segmentation using K-Means')
+plt.xlabel('Annual Income (k$)')
+plt.ylabel('Spending Score (1-100)')
 plt.legend()
-plt.title("Customer Segments")
+plt.show()
+
 ```
 
 ## Output:
-<img width="975" height="577" alt="image" src="https://github.com/user-attachments/assets/bdcd0e23-6090-40fd-a9b0-d00fd2cd3378" />
-
-<img width="1062" height="611" alt="image" src="https://github.com/user-attachments/assets/46600e7b-197d-46ed-9be1-16655ae6ac23" />
-
-<img width="788" height="226" alt="image" src="https://github.com/user-attachments/assets/c0bd24fd-caae-4b10-a638-c5b7594602bb" />
-
-<img width="892" height="577" alt="image" src="https://github.com/user-attachments/assets/6495f846-618b-42e6-bb31-b73094a243e5" />
+![Screenshot_10-3-2026_105839_localhost](https://github.com/user-attachments/assets/b7c4ded3-d5cb-4bdd-8ad3-3dc570a96fbe)
+![Screenshot_10-3-2026_105851_localhost](https://github.com/user-attachments/assets/21e7f3b2-b93d-4d47-a982-1b5cf131a0d2)
+![Screenshot_10-3-2026_105918_localhost](https://github.com/user-attachments/assets/11f84101-c4b5-4e74-9c8b-8f4229dfba69)
 
 
 
